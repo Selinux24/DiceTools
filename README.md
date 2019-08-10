@@ -1,1 +1,1 @@
-# MathHammer
+# DiceTools
