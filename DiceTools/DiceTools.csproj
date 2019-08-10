@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1FD83CAD-CBFC-40B6-A5B6-15D53E4D09E9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>DiceTools</RootNamespace>
+    <AssemblyName>DiceTools</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BearerDamageTypes.cs" />
+    <Compile Include="Dice.cs" />
+    <Compile Include="DiceModes.cs" />
+    <Compile Include="ShootingPhaseStats.cs" />
+    <Compile Include="Tester.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tester.Designer.cs">
+      <DependentUpon>Tester.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Impact.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shoot.cs" />
+    <Compile Include="ShootingParams.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="Unit.cs" />
+    <Compile Include="UnitGen.cs" />
+    <Compile Include="Units\ImperialKnights\KnightPreceptor.cs" />
+    <Compile Include="Units\ImperialKnights\ArmigerWarglaive.cs" />
+    <Compile Include="Units\ImperialKnights\Armory.cs" />
+    <Compile Include="Units\ImperialKnights\ArmigerHelverin.cs" />
+    <Compile Include="Units\Orks\Armory.cs" />
+    <Compile Include="Units\Orks\Gretchin.cs" />
+    <Compile Include="Units\Orks\BurnaBoyz.cs" />
+    <Compile Include="Units\Orks\MekGunz.cs" />
+    <Compile Include="Units\Orks\Lootas.cs" />
+    <Compile Include="Units\Orks\OrkUnit.cs" />
+    <Compile Include="Units\Orks\Gunwagon.cs" />
+    <Compile Include="Units\Orks\BigMek.cs" />
+    <Compile Include="Units\Orks\DeffkillaWartrike.cs" />
+    <Compile Include="Units\Orks\Trukk.cs" />
+    <Compile Include="Units\Orks\WarBikers.cs" />
+    <Compile Include="Units\SpaceWolves\Armory.cs" />
+    <Compile Include="Units\Orks\Boyz.cs" />
+    <Compile Include="Units\Orks\FlashGitz.cs" />
+    <Compile Include="Units\SpaceWolves\GreyHunters.cs" />
+    <Compile Include="Units\SpaceWolves\Hellblasters.cs" />
+    <Compile Include="Units\SpaceWolves\Intercessors.cs" />
+    <Compile Include="Units\SpaceWolves\Razorback.cs" />
+    <Compile Include="Units\SpaceWolves\LandSpeeders.cs" />
+    <Compile Include="Units\SpaceWolves\Rhino.cs" />
+    <Compile Include="Units\SpaceWolves\SpaceWolvesUnit.cs" />
+    <Compile Include="Weapon.cs" />
+    <Compile Include="WeaponTypes.cs" />
+    <Compile Include="Wound.cs" />
+    <EmbeddedResource Include="Tester.resx">
+      <DependentUpon>Tester.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
