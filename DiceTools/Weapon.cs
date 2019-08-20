@@ -11,28 +11,42 @@ namespace DiceTools
         public static bool CalcImpacts(int bs, ShootingParams shootingParams, out int roll, out int rollModified)
         {
             roll = Dice.D6();
+            rollModified = roll + shootingParams.ShootingModifiers;
 
-            if (roll == 1 && shootingParams.ShootingRerollOnes)
+            if (shootingParams.ShootingRerolls == 0)
+            {
+                return roll != 1 && rollModified >= bs;
+            }
+
+            bool reroll = false;
+            if (roll == 1 && shootingParams.ShootingRerollUnmodifiedOnes)
             {
                 //Reroll ones before modifiers
-                roll = Dice.D6();
+                reroll = true;
             }
-            else if (roll + shootingParams.ShootingModifiers < bs)
+            else if (roll < bs && shootingParams.ShootingRerollUnmodifiedFails)
             {
-                if (shootingParams.ShootingRerollAll)
-                {
-                    //Reroll all after modifiers
-                    roll = Dice.D6();
-                }
-                else if (shootingParams.ShootingRerolls > 0)
-                {
-                    //Reroll until rerolls available
-                    shootingParams.ShootingRerolls--;
-                    roll = Dice.D6();
-                }
+                //Reroll fails before modifiers
+                reroll = true;
+            }
+            else if (rollModified == 1 && shootingParams.ShootingRerollOnes)
+            {
+                //Reroll ones after modifiers
+                reroll = true;
+            }
+            else if (rollModified < bs && shootingParams.ShootingRerollFails)
+            {
+                //Reroll fails after modifiers
+                reroll = true;
             }
 
-            rollModified = roll + shootingParams.ShootingModifiers;
+            if (reroll && shootingParams.ShootingRerolls > 0)
+            {
+                roll = Dice.D6();
+                rollModified = roll + shootingParams.ShootingModifiers;
+
+                shootingParams.ShootingRerolls--;
+            }
 
             return roll != 1 && rollModified >= bs;
         }
@@ -46,9 +60,34 @@ namespace DiceTools
             if (s * 2 <= t) return 6;
             return 5;
         }
-        public static int CalcDamage(int damageValue, int damageDice, DiceModes mode)
+        public static int CalcDamage(ShootingParams shootingParams, int damageValue, int damageDice, DiceModes mode)
         {
-            return damageDice != 0 ? Dice.D(damageDice, damageValue, mode) : damageValue;
+            int totalDamage = 0;
+
+            for (int i = 0; i < damageValue; i++)
+            {
+                int damage = damageDice != 0 ? Dice.D(damageDice, 1, mode) : damageValue;
+
+                if (shootingParams.DamageRerolls == 0)
+                {
+                    totalDamage += damage;
+
+                    continue;
+                }
+
+                float threshold = 100.0f * damage / damageDice;
+
+                if (threshold < shootingParams.PercentToRerollDamage && shootingParams.DamageRerolls > 0)
+                {
+                    shootingParams.DamageRerolls--;
+
+                    damage = damageDice != 0 ? Dice.D(damageDice, 1, mode) : damageValue;
+
+                    totalDamage += damage;
+                }
+            }
+
+            return totalDamage;
         }
 
         public string Name { get; set; }
@@ -83,7 +122,7 @@ namespace DiceTools
         }
         public virtual int CalcDamage(Wound wound, Model target, ShootingParams shootingParams)
         {
-            return CalcDamage(Damage, DamageDice, DiceModes.Sum);
+            return CalcDamage(shootingParams, Damage, DamageDice, DiceModes.Sum);
         }
 
         public virtual int GenerateShoots(int distance)
@@ -137,30 +176,45 @@ namespace DiceTools
             int s = CalcStrength();
             int toWoundRoll = CalcToWoundRoll(s, t);
 
-            int res = Dice.D6();
-            if (res == 1 && shootingParams.WoundingRerollOnes)
+            int roll = Dice.D6();
+            int rollModified = roll + shootingParams.WoundingModifiers;
+
+            if (shootingParams.WoundingRerolls == 0 && roll != 1 && rollModified >= toWoundRoll)
             {
-                res = Dice.D6();
-            }
-            else if (res + shootingParams.WoundingModifiers < toWoundRoll)
-            {
-                if (shootingParams.WoundingRerollAll)
-                {
-                    res = Dice.D6();
-                }
-                else if (shootingParams.WoundingRerolls > 0)
-                {
-                    shootingParams.WoundingRerolls--;
-                    res = Dice.D6();
-                }
+                Wound w = new Wound(this, rollModified, false);
+                wounds.Add(w);
             }
 
-            if (res + shootingParams.WoundingModifiers >= toWoundRoll)
+            bool reroll = false;
+            if (roll == 1 && shootingParams.WoundingRerollUnmodifiedOnes)
             {
-                wounds.Add(new Wound()
-                {
-                    Weapon = this,
-                });
+                reroll = true;
+            }
+            else if (roll < toWoundRoll && shootingParams.WoundingRerollUnmodifiedFails)
+            {
+                reroll = true;
+            }
+            else if (rollModified == 1 && shootingParams.WoundingRerollOnes)
+            {
+                reroll = true;
+            }
+            else if (rollModified < toWoundRoll && shootingParams.WoundingRerollFails)
+            {
+                reroll = true;
+            }
+
+            if (reroll && shootingParams.WoundingRerolls > 0)
+            {
+                roll = Dice.D6();
+                rollModified = roll + shootingParams.WoundingModifiers;
+
+                shootingParams.WoundingRerolls--;
+            }
+
+            if (roll != 1 && rollModified >= toWoundRoll)
+            {
+                Wound w = new Wound(this, rollModified, false);
+                wounds.Add(w);
             }
 
             return wounds;
@@ -176,7 +230,7 @@ namespace DiceTools
         {
             if (Range / 2 >= shootingParams.Distance)
             {
-                return CalcDamage(Damage * 2, DamageDice, DiceModes.Max);
+                return CalcDamage(shootingParams, Damage * 2, DamageDice, DiceModes.Max);
             }
 
             return base.CalcDamage(wound, target, shootingParams);

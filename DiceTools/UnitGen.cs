@@ -3,6 +3,7 @@ namespace DiceTools
 {
     using DiceTools.Units.ImperialKnights;
     using DiceTools.Units.Orks;
+    using DiceTools.Units.SpaceWolves;
 
     public class UnitGen
     {
@@ -16,7 +17,7 @@ namespace DiceTools
             //var unit = Intercessors.Create(true, 4);
             //var unit = Hellblasters.Create(true, 4);
             //var unit = Razorback.Create(RazorBackTypes.LasscannonAndTwinPlasmaGun, true, true);
-            //var unit = MekGunz.Create(MekGunzTypes.KustomMegaKannon, 1);
+            //var unit = MekGunz.Create(MekGunzTypes.SmashaGun, 5);
             //var unit = GreyHunters.Create(true, false, true, 4, 0, 1);
             //var unit = Gunwagon.Create(GunwagonTypes.Default, 4);
             //var unit = LandSpeeders.Create(LandSpeederTypes.MeltaCannon, LandSpeederWeaponTypes.AssaultCannon, 1);
@@ -38,10 +39,10 @@ namespace DiceTools
             //var unit = WarBikers.Create(true, 5);
             //var unit = Boyz.Create(false, 27, 0, 3);
             //var unit = ArmigerWarglaive.Create(ArmigerWarglaiveTypes.Default);
-            var unit = KnightPreceptor.Create(KnightPreceptorTypes.Default);
+            //var unit = KnightPreceptor.Create(KnightPreceptorTypes.Default);
             //var unit = Gunwagon.Create(GunwagonTypes.ZzapGun, 4);
             //var unit = ArmigerHelverin.Create(ArmigerHelverinTypes.Default);
-            //var unit = Rhino.Create();
+            var unit = Rhino.Create();
             //var unit = Razorback.Create(RazorBackTypes.TwinHeavyBolter, true, true);
 
             return unit;

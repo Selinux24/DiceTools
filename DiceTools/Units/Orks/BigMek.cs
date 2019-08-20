@@ -13,7 +13,7 @@ namespace DiceTools.Units.Orks
 
             return new BigMek()
             {
-                Name = "Big Mek",
+                Name = soupedShokka ? "Big Mek with Da souped Shooka" : "Big Mek",
                 Soldiers = new List<Model>() { CreateBigMek(weapons) }
             };
         }

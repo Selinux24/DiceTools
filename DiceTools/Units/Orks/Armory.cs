@@ -362,10 +362,10 @@ namespace DiceTools.Units.Orks
                 if (target.Flyer)
                 {
                     //Two damage dices versus flyers
-                    return CalcDamage(Damage * 2, DamageDice, DiceModes.Max);
+                    return CalcDamage(shootingParams, Damage * 2, DamageDice, DiceModes.Max);
                 }
 
-                return CalcDamage(Damage, DamageDice, DiceModes.Max);
+                return CalcDamage(shootingParams, Damage, DamageDice, DiceModes.Max);
             }
 
             public override Impact ImpactTest(Model attacker, ShootingParams shootingParams)
@@ -431,11 +431,7 @@ namespace DiceTools.Units.Orks
 
                 if (currentStrength >= 11)
                 {
-                    wounds.Add(new Wound()
-                    {
-                        Weapon = this,
-                        Mortal = true,
-                    });
+                    wounds.Add(new Wound(this, 0, true));
                 }
 
                 wounds.AddRange(base.WoundTest(t, shootingParams));
@@ -463,10 +459,7 @@ namespace DiceTools.Units.Orks
                 int s = CalcStrength();
                 if (s >= t)
                 {
-                    wounds.Add(new Wound()
-                    {
-                        Weapon = this,
-                    });
+                    wounds.Add(new Wound(this, 0, false));
                 }
 
                 return wounds;

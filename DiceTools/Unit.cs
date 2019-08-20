@@ -19,12 +19,16 @@ namespace DiceTools
                 var impacts = ResolveShoots(shoots, shootingParams);
                 if (impacts.Any())
                 {
-                    stats.Impacts += impacts.Count;
+                    stats.Shoots += impacts.Count;
                     stats.Hits += impacts.Count(i => i.Impacted);
 
                     var targetSoldiers = target.Soldiers.Where(s => s.W > 0);
 
-                    ResolveWounds(impacts, targetSoldiers, shootingParams);
+                    ResolveWounds(impacts, targetSoldiers, shootingParams, out int wounds, out int generatedDamage, out int damage);
+
+                    stats.Wounds += wounds;
+                    stats.GeneratedDamage += generatedDamage;
+                    stats.Damage += damage;
 
                     ResolveBearerWounds(impacts);
                 }
@@ -85,8 +89,12 @@ namespace DiceTools
 
             return impacts;
         }
-        public virtual void ResolveWounds(List<Impact> impacts, IEnumerable<Model> targets, ShootingParams shootingParams)
+        public virtual void ResolveWounds(List<Impact> impacts, IEnumerable<Model> targets, ShootingParams shootingParams, out int generatedWounds, out int generatedDamage, out int damageDone)
         {
+            generatedWounds = 0;
+            generatedDamage = 0;
+            damageDone = 0;
+
             //Resolve wounds
             foreach (var impact in impacts.Where(i => i.Impacted))
             {
@@ -106,6 +114,8 @@ namespace DiceTools
                 var wounds = impact.Weapon.WoundTest(maxT, shootingParams);
                 if (wounds.Any())
                 {
+                    generatedWounds += wounds.Count;
+
                     //Find target model
                     var activeTarget = targets
                         .Where(s => s.W > 0)
@@ -114,12 +124,16 @@ namespace DiceTools
 
                     foreach (var wound in wounds)
                     {
+                        //Not saved
+                        int damage = impact.Weapon.CalcDamage(wound, activeTarget, shootingParams);
+
+                        generatedDamage += damage;
+
                         //Save roll
                         var saved = activeTarget.SaveTest(wound);
                         if (!saved)
                         {
-                            //Not saved
-                            var damage = impact.Weapon.CalcDamage(wound, activeTarget, shootingParams);
+                            damageDone += damage;
 
                             //Set damage to target
                             activeTarget.Damage(damage);
