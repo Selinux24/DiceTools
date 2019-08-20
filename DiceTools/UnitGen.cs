@@ -1,4 +1,7 @@
-﻿
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
 namespace DiceTools
 {
     using DiceTools.Units.ImperialKnights;
@@ -7,6 +10,23 @@ namespace DiceTools
 
     public class UnitGen
     {
+        public static IEnumerable<Unit> ListUnits()
+        {
+            List<Unit> units = new List<Unit>();
+
+            var type = typeof(Unit);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => type.IsAssignableFrom(p) && type != p && !p.IsAbstract);
+
+            foreach (var item in types)
+            {
+                units.Add((Unit)Activator.CreateInstance(item));
+            }
+
+            return units;
+        }
+
         public Unit GetAttacker()
         {
             //var unit = WarBikers.Create(true, 5);

@@ -10,39 +10,155 @@ namespace DiceTools
         public Tester()
         {
             InitializeComponent();
+
+            var unitsAttacker = UnitGen.ListUnits();
+            var unitsTargets = UnitGen.ListUnits();
+
+            cbUnitAttacker.Items.AddRange(unitsAttacker.ToArray());
+            cbUnitTarget.Items.AddRange(unitsTargets.ToArray());
+
+            LoadShootingParams(new ShootingParams() { Distance = 24 });
+        }
+
+        private void LoadShootingParams(ShootingParams shootingParams)
+        {
+            txtSPDistance.Text = $"{shootingParams.Distance}";
+
+            cbSPSupercharge.Checked = shootingParams.SuperchargeWeapons;
+            cbSPOverkill.Checked = shootingParams.OverKill;
+
+            txtSPToHitModifiers.Text = $"{shootingParams.ShootingModifiers}";
+            cbSPToHitRerollUOnes.Checked = shootingParams.ShootingRerollUnmodifiedOnes;
+            cbSPToHitRerollUFails.Checked = shootingParams.ShootingRerollUnmodifiedFails;
+            cbSPToHitRerollOnes.Checked = shootingParams.ShootingRerollOnes;
+            cbSPToHitRerollFails.Checked = shootingParams.ShootingRerollFails;
+            txtSPToHitRerolls.Text = $"{shootingParams.ShootingRerolls}";
+
+            txtSPToWoundModifiers.Text = $"{shootingParams.WoundingModifiers}";
+            cbSPToWoundRerollUOnes.Checked = shootingParams.WoundingRerollUnmodifiedOnes;
+            cbSPToWoundRerollUFails.Checked = shootingParams.WoundingRerollUnmodifiedFails;
+            cbSPToWoundRerollOnes.Checked = shootingParams.WoundingRerollOnes;
+            cbSPToWoundRerollFails.Checked = shootingParams.WoundingRerollFails;
+            txtSPToWoundRerolls.Text = $"{shootingParams.WoundingRerolls}";
+
+            cbSPToDamageReroll.Checked = shootingParams.DamageReroll;
+            txtSPToDamageThreshold.Text = $"{shootingParams.PercentToRerollDamage}";
+            txtSPToDamageRerolls.Text = $"{shootingParams.DamageRerolls}";
+        }
+
+        private bool ReadShootingParams(out ShootingParams shootingParams)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            string distanceError = "Write a valid distance number (positive integer)";
+            string toHitModifiersError = "Write a valid to hit modifiers number (integer)";
+            string toHitRerollsError = "Write a valid to hit number of rerolls (integer, -1 for all rolls)";
+            string toWoundModifiersError = "Write a valid to wound modifiers number (integer)";
+            string toWoundRerollsError = "Write a valid to wound number of rerolls (integer, -1 for all rolls)";
+            string toDamageThresholdError = "Write a valid damage reroll threshold number (positive integer from 0 to 100)";
+            string toDamageRerollsError = "Write a valid damage number of rerolls (integer, -1 for all rolls)";
+
+            if (!int.TryParse(txtSPDistance.Text, out int distance))
+            {
+                sb.AppendLine(distanceError);
+            }
+            else if (distance <= 0)
+            {
+                sb.AppendLine(distanceError);
+            }
+
+            if (!int.TryParse(txtSPToHitModifiers.Text, out int shootingModifiers))
+            {
+                sb.AppendLine(toHitModifiersError);
+            }
+
+            if (!int.TryParse(txtSPToHitRerolls.Text, out int shootingRerolls))
+            {
+                sb.AppendLine(toHitRerollsError);
+            }
+            else if (shootingRerolls < -1)
+            {
+                sb.AppendLine(toHitRerollsError);
+            }
+
+            if (!int.TryParse(txtSPToWoundModifiers.Text, out int woundingModifiers))
+            {
+                sb.AppendLine(toWoundModifiersError);
+            }
+
+            if (!int.TryParse(txtSPToWoundRerolls.Text, out int woundingRerolls))
+            {
+                sb.AppendLine(toWoundRerollsError);
+            }
+            else if (woundingRerolls < -1)
+            {
+                sb.AppendLine(toWoundRerollsError);
+            }
+
+            if (!int.TryParse(txtSPToDamageThreshold.Text, out int damageThreshold))
+            {
+                sb.AppendLine(toDamageThresholdError);
+            }
+            else if (damageThreshold < 0 || damageThreshold > 100)
+            {
+                sb.AppendLine(toDamageThresholdError);
+            }
+
+            if (!int.TryParse(txtSPToDamageRerolls.Text, out int damageRerolls))
+            {
+                sb.AppendLine(toDamageRerollsError);
+            }
+            else if (damageRerolls < -1)
+            {
+                sb.AppendLine(toDamageRerollsError);
+            }
+
+            if (sb.Length > 0)
+            {
+                MessageBox.Show(sb.ToString());
+
+                shootingParams = null;
+
+                return false;
+            }
+
+            shootingParams = new ShootingParams()
+            {
+                Distance = distance,
+
+                SuperchargeWeapons = cbSPSupercharge.Checked,
+                OverKill = cbSPOverkill.Checked,
+
+                ShootingModifiers = shootingModifiers,
+                ShootingRerollUnmodifiedOnes = cbSPToHitRerollUOnes.Checked,
+                ShootingRerollUnmodifiedFails = cbSPToHitRerollUFails.Checked,
+                ShootingRerollOnes = cbSPToHitRerollOnes.Checked,
+                ShootingRerollFails = cbSPToHitRerollFails.Checked,
+                ShootingRerolls = shootingRerolls,
+
+                WoundingModifiers = woundingModifiers,
+                WoundingRerollUnmodifiedOnes = cbSPToWoundRerollUOnes.Checked,
+                WoundingRerollUnmodifiedFails = cbSPToWoundRerollUFails.Checked,
+                WoundingRerollOnes = cbSPToWoundRerollOnes.Checked,
+                WoundingRerollFails = cbSPToWoundRerollFails.Checked,
+                WoundingRerolls = woundingRerolls,
+
+                DamageReroll = cbSPToDamageReroll.Checked,
+                PercentToRerollDamage = damageThreshold,
+                DamageRerolls = damageRerolls,
+            };
+
+            return true;
         }
 
         private void Button1_Click(object sender, EventArgs e)
         {
             int testCount = 1000;
 
-            var shootingParams = new ShootingParams()
+            if (ReadShootingParams(out var shootingParams))
             {
-                Distance = 12,
-
-                SuperchargeWeapons = false,
-                OverKill = false,
-
-                ShootingModifiers = 0,
-                ShootingRerollUnmodifiedOnes = false,
-                ShootingRerollUnmodifiedFails = false,
-                ShootingRerollOnes = false,
-                ShootingRerollFails = true,
-                ShootingRerolls = 1,
-
-                WoundingModifiers = 1,
-                WoundingRerollUnmodifiedOnes = false,
-                WoundingRerollUnmodifiedFails = false,
-                WoundingRerollOnes = false,
-                WoundingRerollFails = true,
-                WoundingRerolls = 1,
-
-                DamageReroll = true,
-                PercentToRerollDamage = 45,
-                DamageRerolls = 1,
-            };
-
-            Test(new UnitGen(), shootingParams, testCount);
+                Test(new UnitGen(), shootingParams, testCount);
+            }
         }
 
         private void Test(UnitGen unitGenerator, ShootingParams shootingParams, int testCount)

@@ -4,16 +4,24 @@ namespace DiceTools.Units.Orks
 {
     public class BigMek : OrkUnit
     {
-        public static BigMek Create(bool soupedShokka)
+        public static BigMek Create(bool soupedUpShokka)
         {
+            Weapon weapon = soupedUpShokka ? 
+                Armory.CreateWeaponDaSoupedUpShokka() : 
+                Armory.CreateWeaponShokkAttackGun();
+
+            string name = soupedUpShokka ? 
+                "Big Mek with Da Souped-up Shokka" : 
+                "Big Mek with Shokk Attack Gun";
+
             List<Weapon> weapons = new List<Weapon>
             {
-                soupedShokka ?  Armory.CreateWeaponDaSoupedShockGun() : Armory.CreateWeaponShockGun(),
+                weapon,
             };
 
             return new BigMek()
             {
-                Name = soupedShokka ? "Big Mek with Da souped Shooka" : "Big Mek",
+                Name = name,
                 Soldiers = new List<Model>() { CreateBigMek(weapons) }
             };
         }
@@ -22,7 +30,7 @@ namespace DiceTools.Units.Orks
         {
             return new Model()
             {
-                Name = "BigMek",
+                Name = "Big Mek",
                 WS = 5,
                 BS = 5,
                 S = 6,
