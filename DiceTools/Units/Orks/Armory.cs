@@ -472,7 +472,7 @@ namespace DiceTools.Units.Orks
             {
                 var impact = base.ImpactTest(attacker, shootingParams);
 
-                if (impact.Roll == 1)
+                if (impact.CriticalFail)
                 {
                     impact.BearerDamage = BearerDamageTypes.FirstWoundOnly;
                 }

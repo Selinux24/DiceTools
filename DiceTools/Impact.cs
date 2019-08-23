@@ -9,6 +9,17 @@ namespace DiceTools
         public bool Mortal { get; set; }
         public int Roll { get; set; }
         public int RollModified { get; set; }
-        public BearerDamageTypes BearerDamage { get; set; }
+        public BearerDamageTypes BearerDamage { get; set; } = BearerDamageTypes.None;
+
+        /// <summary>
+        /// Critical fail
+        /// </summary>
+        public bool CriticalFail
+        {
+            get
+            {
+                return Roll == 1 || RollModified == 1;
+            }
+        }
     }
 }
