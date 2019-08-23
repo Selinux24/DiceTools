@@ -258,9 +258,9 @@ namespace DiceTools.Units.Orks
                 Damage = 3,
             };
         }
-        public static Weapon CreateWeaponShockGun()
+        public static Weapon CreateWeaponShokkAttackGun()
         {
-            return new ShockGun()
+            return new ShokkAttackGun()
             {
                 Name = "Shock Gun",
                 Range = 60,
@@ -274,11 +274,11 @@ namespace DiceTools.Units.Orks
                 DamageDice = 6,
             };
         }
-        public static Weapon CreateWeaponDaSoupedShockGun()
+        public static Weapon CreateWeaponDaSoupedUpShokka()
         {
-            return new ShockGun()
+            return new ShokkAttackGun()
             {
-                Name = "DaSouped Shock Gun",
+                Name = "Da Souped-up Shokka",
                 Range = 60,
                 Type = WeaponTypes.Heavy,
                 Attacks = 2,
@@ -409,7 +409,7 @@ namespace DiceTools.Units.Orks
             }
         }
 
-        public class ShockGun : Weapon
+        public class ShokkAttackGun : Weapon
         {
             private int currentStrength = 0;
 
